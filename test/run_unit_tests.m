@@ -1,12 +1,18 @@
-% Code for running all unit tests
+function results = run_unit_tests()
+%RUN_UNIT_TESTS Run all matlab.unittest tests under /test
+%
+% Usage:
+%   cd test
+%   results = run_unit_tests();
 
-function run_unit_tests()
-    % Add paths to necessary directories
-    addpath('helpers');
-    addpath('fixtures');
-    
-    % Call individual test functions
-    assert_vectors_close();
-    TestHardcodedDelayWeightsMatchGenerated();
-    TestFixturesSanity();
+    import matlab.unittest.TestSuite
+    import matlab.unittest.TestRunner
+
+    here = fileparts(mfilename('fullpath'));
+    addpath(genpath(here));
+    addpath(genpath(fullfile(here, "..")));
+
+    suite  = TestSuite.fromFolder(here, 'IncludingSubfolders', true);
+    runner = TestRunner.withTextOutput;
+    results = runner.run(suite);
 end
